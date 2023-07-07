@@ -1,8 +1,11 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: The Rosary
+description: A personal Website for an IT industry practitioners
 theme: just-the-docs
 
 url: https://rosaryxiang.github.io
 
 aux_links:
   Template Repository: https://github.com/RosaryXiang/rosaryxiang.github.io
+
+# Set a path/url to a favicon that will be displayed by the browser
+favicon_ico: "/images/favicon.ico"
