@@ -1,7 +1,6 @@
 ---
 layout: default
 title: JavaScript
-parent: Programming Languages
-nav_order: 2
+nav_order: 3
 ---
 Hi, here is subdoc one!
