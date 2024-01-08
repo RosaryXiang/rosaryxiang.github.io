@@ -1,8 +1,8 @@
 ---
 layout: default
 title: JavaScript
-nav_order: 3
-parent: Programming Languages
+has_children: true
+nav_order: 5
 ---
 
 Hi, here is subdoc one!

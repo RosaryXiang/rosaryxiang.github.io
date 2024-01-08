@@ -2,7 +2,6 @@
 layout: default
 title: Managing Component State
 parent: React
-grand_parent: Framework
 nav_order: 1
 ---
 
@@ -216,7 +215,7 @@ function App() {
 
 # Exercise Building an expandableText Component
 
-```TypeScript
+```tsx
 import { useState } from "react";
 import Button from "./Button";
 
