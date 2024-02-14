@@ -2,7 +2,7 @@
 layout: default
 title: Managing Component State
 parent: React
-nav_order: 1
+nav_order: 2
 ---
 
 # State Hook
