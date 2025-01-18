@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Initialization [Coding Convention]
+title: Initialize Before Using
 parent: C++
 nav_order: 3
 ---
