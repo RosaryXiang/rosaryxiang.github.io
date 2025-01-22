@@ -143,3 +143,60 @@ private:
     bool closed;
 };
 ```
+
+## Never call virtual functions during construction or destruction
+
+In the constructor:
+
+When the base class's constructor is running, the derived class portion has not yet been fully constructed. Therefore, the dynamic type of the object is the base class type, not the derived class type. If a virtual function is called at this point, the base class's version will be invoked, not the derived class's version.
+
+In the destructor:
+
+When the derived class's destructor is running, the derived class portion has already been destroyed. Therefore, the dynamic type of the object reverts to the base class type. If a virtual function is called at this point, the base class's version will be invoked, not the derived class's version.
+
+```cpp
+#include <iostream>
+
+class Base {
+public:
+    Base() {
+        std::cout << "Base constructor\n";
+        callVirtual(); // 调用虚函数
+    }
+
+    virtual void callVirtual() {
+        std::cout << "Base::callVirtual\n";
+    }
+
+    virtual ~Base() {
+        std::cout << "Base destructor\n";
+        callVirtual(); // 调用虚函数
+    }
+};
+
+class Derived : public Base {
+public:
+    Derived() {
+        std::cout << "Derived constructor\n";
+    }
+
+    void callVirtual() override {
+        std::cout << "Derived::callVirtual\n";
+    }
+
+    ~Derived() {
+        std::cout << "Derived destructor\n";
+    }
+};
+
+int main() {
+    Derived d;
+    return 0;
+}
+```
+
+# Have assignment operators return a reference to \*this
+
+This is only a convention; code that doesn’t follow it will compile. How-
+ever, the convention is followed by all the built-in types as well as by
+all the types in the standard library (e.g., string, vector, complex, tr1::shared_ptr, etc.). Unless you have a good reason for doing things differently, don’t.
