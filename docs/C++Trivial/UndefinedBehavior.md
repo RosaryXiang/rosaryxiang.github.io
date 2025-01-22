@@ -9,7 +9,7 @@ In C++, undefined behavior (UB) refers to code whose behavior is not specified b
 
 ---
 
-## 1. **Memory-Related Undefined Behavior**
+## **Memory-Related Undefined Behavior**
 
 - **Dereferencing a null pointer**:
   ```cpp
@@ -41,7 +41,7 @@ In C++, undefined behavior (UB) refers to code whose behavior is not specified b
 
 ---
 
-## 2. **Type-Related Undefined Behavior**
+## **Type-Related Undefined Behavior**
 
 - **Violating strict aliasing rules**:
   ```cpp
@@ -61,7 +61,7 @@ In C++, undefined behavior (UB) refers to code whose behavior is not specified b
 
 ---
 
-## 3. **Arithmetic-Related Undefined Behavior**
+## **Arithmetic-Related Undefined Behavior**
 
 - **Division by zero**:
   ```cpp
@@ -83,7 +83,7 @@ In C++, undefined behavior (UB) refers to code whose behavior is not specified b
 
 ---
 
-## 4. **Object Lifetime-Related Undefined Behavior**
+## **Object Lifetime-Related Undefined Behavior**
 
 - **Accessing an object after its lifetime has ended**:
   ```cpp
@@ -103,7 +103,7 @@ In C++, undefined behavior (UB) refers to code whose behavior is not specified b
 
 ---
 
-## 5. **Concurrency-Related Undefined Behavior**
+## **Concurrency-Related Undefined Behavior**
 
 - **Data races (accessing shared data without synchronization)**:
   ```cpp
@@ -170,7 +170,7 @@ In C++, undefined behavior (UB) refers to code whose behavior is not specified b
 
 ---
 
-## 8. **Compiler-Specific Undefined Behavior**
+## **Compiler-Specific Undefined Behavior**
 
 - **Using non-standard extensions**:
   ```cpp
@@ -185,7 +185,7 @@ In C++, undefined behavior (UB) refers to code whose behavior is not specified b
 
 ---
 
-## 9. **Miscellaneous Undefined Behavior**
+## **Miscellaneous Undefined Behavior**
 
 - **Infinite recursion**:
   ```cpp
