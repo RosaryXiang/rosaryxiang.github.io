@@ -1,159 +1,208 @@
----
-layout: default
-title: Undefined Behavior
-parent: C++ Trivial
-nav_order: 2
----
-
-# Categories of Undefined Behavior in C++
-
-Undefined behavior (UB) in C++ occurs when the program violates the rules of the C++ Standard in ways that the Standard does not define. There are several common categories of undefined behavior, including:
+In C++, undefined behavior (UB) refers to code whose behavior is not specified by the C++ standard, leading to unpredictable results. This can cause crashes, security vulnerabilities, or unexpected program behavior. Below are some common categories of undefined behavior in C++:
 
 ---
 
-## **1. Memory Violations**
+## 1. **Memory-Related Undefined Behavior**
 
-- **Accessing invalid memory locations**:
-  - Dereferencing a `nullptr`.
-  - Accessing memory outside the bounds of an array or object.
-  - Using a dangling pointer or reference (e.g., after the object has been deleted).
-- **Double `delete` or deleting an invalid pointer**:
+- **Dereferencing a null pointer**:
   ```cpp
-  int* p = new int;
-  delete p;
-  delete p; // UB: double delete
+  int* ptr = nullptr;
+  int value = *ptr; // UB
   ```
-
----
-
-## **2. Violations of Object Lifetime**
-
-- **Accessing an object outside its lifetime**:
-  - Using an object after it has been destroyed or before it has been constructed.
-  - Calling a member function on a moved-from or destroyed object.
-
----
-
-## **3. Violations of Type Safety**
-
-- **Invalid type conversions**:
-  - Casting an object to an unrelated type.
-  - Reinterpreting memory with an incompatible type.
-  - Using a pointer to an object as a pointer to an incorrect type.
+- **Accessing out-of-bounds memory**:
   ```cpp
-  int i = 42;
-  char* p = reinterpret_cast<char*>(&i); // May cause UB
+  int arr[5];
+  int value = arr[10]; // UB
   ```
-
----
-
-## **4. Data Races in Multithreading**
-
-- **Concurrent modification and access**:
-  - Two or more threads access the same memory location, and at least one is a write, without proper synchronization.
-  ```cpp
-  int shared_var = 0;
-  std::thread t1([&] { shared_var++; });
-  std::thread t2([&] { shared_var--; }); // Race condition: UB
-  ```
-
----
-
-## **5. Improper Use of Functions**
-
-- **Violating function contracts**:
-  - Calling functions with invalid arguments (e.g., passing a `nullptr` to a function that does not allow it).
-  - Violating `noexcept` guarantees (leads to `std::terminate()` but not UB itself).
-- **Calling a deleted or non-existent function**:
-  - Calling a pure virtual function directly via a base class pointer.
-  ```cpp
-  struct Base {
-      virtual void func() = 0; // Pure virtual function
-  };
-  Base* b = nullptr;
-  b->func(); // UB: calling a pure virtual function
-  ```
-
----
-
-## **6. Unsequenced Modifications**
-
-- **Modifying an object multiple times without a sequence point**:
-  - Undefined behavior occurs when the order of modifications is not specified.
-  ```cpp
-  int x = 0;
-  x = x++ + ++x; // UB: unsequenced modifications of x
-  ```
-
----
-
-## **7. Violations of Compiler Optimizations**
-
-- **Assumptions made by the compiler**:
-  - Modifying a `const` object.
-  - Violating `strict aliasing rules` by accessing the same memory location using pointers of incompatible types.
-  ```cpp
-  int x = 42;
-  float* p = (float*)&x; // UB: violates strict aliasing
-  ```
-
----
-
-## **8. Standard Library Misuse**
-
-- **Improper use of library functions**:
-  - Providing invalid iterators to standard algorithms.
-  - Modifying a container while iterating over it.
-  ```cpp
-  std::vector<int> vec = {1, 2, 3};
-  for (auto it = vec.begin(); it != vec.end(); ++it) {
-      vec.push_back(4); // UB: modifying container during iteration
-  }
-  ```
-
----
-
-## **9. Violations in Low-Level Operations**
-
-- **Using uninitialized variables**:
-  - Reading the value of an uninitialized variable.
+- **Use of uninitialized variables**:
   ```cpp
   int x;
-  int y = x + 1; // UB: x is uninitialized
+  int y = x + 1; // UB
   ```
-- **Shift operations with invalid ranges**:
-  - Shifting a value by more bits than its width.
+- **Dereferencing a dangling pointer**:
   ```cpp
-  int x = 1 << 32; // UB: shift exceeds width of int
+  int* ptr = new int(10);
+  delete ptr;
+  int value = *ptr; // UB
+  ```
+- **Double deletion of memory**:
+  ```cpp
+  int* ptr = new int(10);
+  delete ptr;
+  delete ptr; // UB
   ```
 
 ---
 
-## **10. UB in Exception Handling**
+## 2. **Type-Related Undefined Behavior**
 
-- **Throwing exceptions in `noexcept` functions**.
-- **Uncaught exceptions during stack unwinding**:
-  - Throwing another exception while an exception is being propagated.
+- **Violating strict aliasing rules**:
+  ```cpp
+  int x = 10;
+  float* f = reinterpret_cast<float*>(&x); // UB if accessed
+  ```
+- **Incorrect type casting**:
+  ```cpp
+  double d = 3.14;
+  int* p = reinterpret_cast<int*>(&d); // UB if accessed
+  ```
+- **Misaligned pointers**:
+  ```cpp
+  char buffer[10];
+  int* p = reinterpret_cast<int*>(&buffer[1]); // UB if accessed
+  ```
 
 ---
 
-## **11. Use of UB-Prone Features**
+## 3. **Arithmetic-Related Undefined Behavior**
 
-- **Inline assembly with no guarantees**:
-  - Behavior depends on compiler and architecture.
-- **Breaking `volatile` or `atomic` rules**:
-  - Misuse of `volatile` or incorrect atomic operations may lead to UB.
+- **Division by zero**:
+  ```cpp
+  int x = 10 / 0; // UB
+  ```
+- **Signed integer overflow**:
+  ```cpp
+  int x = INT_MAX;
+  x += 1; // UB
+  ```
+- **Shift operations beyond bit width**:
+  ```cpp
+  int x = 1 << 33; // UB if int is 32 bits
+  ```
+- **Modulo by zero**:
+  ```cpp
+  int x = 10 % 0; // UB
+  ```
 
 ---
 
-## Summary
+## 4. **Object Lifetime-Related Undefined Behavior**
 
-Undefined behavior in C++ can occur in many ways, often related to:
+- **Accessing an object after its lifetime has ended**:
+  ```cpp
+  int* ptr;
+  {
+      int x = 10;
+      ptr = &x;
+  }
+  int value = *ptr; // UB
+  ```
+- **Using `std::move` on an object and then accessing it**:
+  ```cpp
+  std::string str = "Hello";
+  std::string str2 = std::move(str);
+  std::cout << str; // UB (str is in a valid but unspecified state)
+  ```
 
-1. Memory issues.
-2. Object lifetime violations.
-3. Type safety violations.
-4. Unsequenced or unsynchronized operations.
-5. Improper use of functions, standard library, or low-level operations.
+---
 
-Understanding these categories helps write safer, more predictable C++ code. Tools like sanitizers (e.g., AddressSanitizer, ThreadSanitizer) and static analyzers can detect potential UB in your code.
+## 5. **Concurrency-Related Undefined Behavior**
+
+- **Data races (accessing shared data without synchronization)**:
+  ```cpp
+  int x = 0;
+  std::thread t1([&x]() { x++; });
+  std::thread t2([&x]() { x++; });
+  t1.join();
+  t2.join(); // UB if x is accessed without synchronization
+  ```
+- **Destroying a mutex while it is locked**:
+  ```cpp
+  std::mutex m;
+  m.lock();
+  m.~mutex(); // UB
+  ```
+
+---
+
+## 6. **Standard Library-Related Undefined Behavior**
+
+- **Invalid iterator usage**:
+  ```cpp
+  std::vector<int> v = {1, 2, 3};
+  auto it = v.begin();
+  v.erase(it);
+  int value = *it; // UB
+  ```
+- **Using `std::unique_ptr` after transferring ownership**:
+  ```cpp
+  std::unique_ptr<int> ptr1 = std::make_unique<int>(10);
+  std::unique_ptr<int> ptr2 = std::move(ptr1);
+  int value = *ptr1; // UB
+  ```
+- **Calling `std::terminate` explicitly**:
+  ```cpp
+  std::terminate(); // UB if not in an exception-handling context
+  ```
+
+---
+
+## 7. **Language Constructs and Syntax-Related Undefined Behavior**
+
+- **Modifying a string literal**:
+  ```cpp
+  char* str = "Hello";
+  str[0] = 'h'; // UB
+  ```
+- **Violating the One Definition Rule (ODR)**:
+
+  ```cpp
+  // File1.cpp
+  int x = 10;
+
+  // File2.cpp
+  int x = 20; // UB if linked together
+  ```
+
+- **Incorrect use of `const_cast`**:
+  ```cpp
+  const int x = 10;
+  int* p = const_cast<int*>(&x);
+  *p = 20; // UB
+  ```
+
+---
+
+## 8. **Compiler-Specific Undefined Behavior**
+
+- **Using non-standard extensions**:
+  ```cpp
+  int x = 10;
+  int y = x >> -1; // UB (implementation-defined behavior)
+  ```
+- **Violating assumptions about implementation-defined behavior**:
+  ```cpp
+  int x = -1;
+  unsigned int y = x; // Implementation-defined, but not UB
+  ```
+
+---
+
+## 9. **Miscellaneous Undefined Behavior**
+
+- **Infinite recursion**:
+  ```cpp
+  void foo() {
+      foo(); // UB if stack overflows
+  }
+  ```
+- **Using `reinterpret_cast` for invalid conversions**:
+  ```cpp
+  int x = 10;
+  float* f = reinterpret_cast<float*>(x); // UB
+  ```
+- **Calling a pure virtual function in a constructor or destructor**:
+  ```cpp
+  struct Base {
+      virtual void foo() = 0;
+      Base() { foo(); } // UB
+  };
+  ```
+
+---
+
+## Key Takeaways
+
+- Undefined behavior can lead to unpredictable results, crashes, or security vulnerabilities.
+- Tools like **AddressSanitizer**, **UBsanitizer**, and **static analyzers** can help detect undefined behavior.
+- Always follow best practices and adhere to the C++ standard to avoid undefined behavior.
