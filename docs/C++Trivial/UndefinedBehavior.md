@@ -1,3 +1,10 @@
+---
+layout: default
+title: Undefined Behavior
+parent: C++ Trivial
+nav_order: 1
+---
+
 In C++, undefined behavior (UB) refers to code whose behavior is not specified by the C++ standard, leading to unpredictable results. This can cause crashes, security vulnerabilities, or unexpected program behavior. Below are some common categories of undefined behavior in C++:
 
 ---

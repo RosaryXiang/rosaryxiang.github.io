@@ -2,7 +2,7 @@
 layout: default
 title: std::terminate
 parent: C++ Trivial
-nav_order: 1
+nav_order: 2
 ---
 
 # std::terminate
