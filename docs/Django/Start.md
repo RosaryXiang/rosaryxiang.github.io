@@ -24,3 +24,9 @@ python manage.py runserver
 
 python manage.py migrate
 ```
+
+Creat admin account:
+
+```
+python manage.py createsuperuser
+```
